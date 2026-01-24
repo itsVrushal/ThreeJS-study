@@ -1,17 +1,24 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { materialAO } from "three/tsl";
-import { PointLight } from "three/webgpu";
-
+import { Pane } from "tweakpane";
 const scene = new THREE.Scene();
+const pane = new Pane();
 
 const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
 const planeGeometry = new THREE.PlaneGeometry(1, 1);
-const Material = new THREE.MeshLambertMaterial();
+const torusKnotGeometry = new THREE.TorusKnotGeometry(0.5, 0.15, 100, 16);
+const SphereGeometry = new THREE.SphereGeometry(1);
+const cylinderGeo = new THREE.CylinderGeometry(1);
+const Material = new THREE.MeshStandardMaterial();
+Material.color = new THREE.Color("red");
 // Material.color = new THREE.Color("blue");
 // Material.transparent = true;
 // Material.opacity = 0.5;
+// Material.shininess = 150;
 Material.side = 2;
+
+// pane.addInput(Material, "metalness", { min: 0, max: 1, step: 0.01 });
+// pane.addInput(Material, "roughness", { min: 0, max: 1, step: 0.01 });
 
 // const fog = new THREE.Fog(0xffffff, 1, 10);
 // scene.fog = fog;
@@ -19,7 +26,7 @@ Material.side = 2;
 
 const cubeMesh = new THREE.Mesh(cubeGeometry, Material);
 
-const Mesh2 = new THREE.Mesh(cubeGeometry, Material);
+const Mesh2 = new THREE.Mesh(torusKnotGeometry, Material);
 Mesh2.position.x = 1.5;
 
 const plane = new THREE.Mesh(planeGeometry, Material);
@@ -40,10 +47,10 @@ scene.add(Mesh2);
 scene.add(plane);
 
 // init Light
-const light = new THREE.AmbientLight(0xffffff, 0.2);
+const light = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(light);
 
-const pointLight = new THREE.PointLight(0xffffff, 200);
+const pointLight = new THREE.PointLight(0xffffff, 50);
 pointLight.position.set(5, 5, 5);
 scene.add(pointLight);
 
@@ -90,7 +97,9 @@ const renderloop = () => {
   const delta = currentTime - previousTime;
 
   console.log(delta);
-
+  scene.children.forEach((children) => {
+    children.rotation.y += 0.01;
+  });
   // cubeMesh.rotation.y += THREE.MathUtils.degToRad(2) * delta * 20;
   // cubeMesh.position.x += THREE.MathUtils.degToRad(1) * delta * 20;
   // cubeMesh.scale.x = 2 + Math.sin(currentTime) * 0.5;
